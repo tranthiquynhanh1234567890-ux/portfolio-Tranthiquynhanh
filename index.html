@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Cá Nhân - Trần Thị Quỳnh Anh</title>
+    <style>
+        /* --- CẤU HÌNH BIẾN MÀU SẮC (TÍM PASTEL CHỦ ĐẠO) --- */
+        :root {
+            --bg-color: #f8f7fc;
+            --sidebar-bg: #f0edf8;
+            --primary-purple: #8e7cc3;
+            --primary-pastel: #b4a7d6;
+            --accent-pink: #d5a6bd; /* Điểm nhấn hồng pastel tinh tế */
+            --text-main: #3d3a45;
+            --text-muted: #6b667a;
+            --white: #ffffff;
+            --shadow: rgba(142, 124, 195, 0.1);
+        }
+
+        /* --- RESET & STYLE CHUNG --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* --- BỐ CỤC SIDEBAR (THANH ĐIỀU HƯỚNG) --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            border-right: 1px solid rgba(142, 124, 195, 0.15);
+            z-index: 100;
+        }
+
+        .profile-box {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--primary-pastel);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-pastel), var(--accent-pink));
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .profile-box h2 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-box p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item button {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item button:hover {
+            background-color: rgba(142, 124, 195, 0.1);
+            color: var(--primary-purple);
+        }
+
+        .nav-item.active button {
+            background-color: var(--primary-purple);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(142, 124, 195, 0.3);
+        }
+
+        /* --- VÙNG NỘI DUNG CHÍNH --- */
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            max-width: 1200px;
+        }
+
+        /* Quản lý ẩn/hiện các trang */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- THIẾT KẾ CÁC THÀNH PHẦN (UI COMPONENTS) --- */
+        h1.page-title {
+            font-size: 2.2rem;
+            color: var(--primary-purple);
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h1.page-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--accent-pink));
+            border-radius: 2px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            border: 1px solid rgba(142, 124, 195, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            color: var(--primary-purple);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Grid thông tin sinh viên */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1-fraction));
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-pastel);
+        }
+
+        .info-item .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .info-item .value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 0.2rem;
+        }
+
+        /* Danh sách bài tập thực hành */
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .exercise-item {
+            border: 1px solid rgba(142, 124, 195, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-header {
+            background-color: var(--bg-color);
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .exercise-header:hover {
+            background-color: rgba(142, 124, 195, 0.08);
+            color: var(--primary-purple);
+        }
+
+        .exercise-item.active {
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .exercise-item.active .exercise-header {
+            background-color: var(--sidebar-bg);
+            color: var(--primary-purple);
+        }
+
+        /* Biểu tượng mũi tên xoay */
+        .arrow-icon {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+        .exercise-item.active .arrow-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Khu vực hiển thị PDF nhúng */
+        .pdf-container {
+            display: none;
+            padding: 1rem;
+            background: #f0edf8;
+            border-top: 1px solid rgba(142, 124, 195, 0.15);
+        }
+
+        .exercise-item.active .pdf-container {
+            display: block;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 550px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--white);
+        }
+
+        /* Khối trích dẫn châm ngôn/cam kết */
+        blockquote {
+            border-left: 4px solid var(--accent-pink);
+            padding: 0.8rem 1.2rem;
+            background: rgba(213, 166, 189, 0.08);
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        /* --- ĐỊNH DẠNG RESPONSIVE (CHO THIẾT BỊ DI ĐỘNG) --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+                padding: 1.5rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(142, 124, 195, 0.15);
+            }
+            .profile-box {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+            }
+            .nav-menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .nav-item button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+            .pdf-viewer {
+                height: 400px; /* Thu nhỏ chiều cao trên điện thoại */
+            }
+        }
+
+        /* ==================================================================
+           --- KỸ THUẬT IN ẤN & XUẤT PDF (CỰC KỲ QUAN TRỌNG) ---
+        ================================================================== */
+        @media print {
+            /* 1. Ẩn hoàn toàn thanh điều hướng và các thành phần không cần thiết */
+            .sidebar, .arrow-icon, .pdf-container {
+                display: none !important;
+            }
+
+            /* 2. Trải phẳng bố cục chính chiếm trọn khổ giấy */
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                display: block !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            /* 3. Hiển thị tất cả các trang cùng một lúc để in ra một tệp duy nhất */
+            .page-section {
+                display: block !important;
+                opacity: 1 !important;
+                transform: none !important;
+                page-break-after: always; /* Tách mỗi trang lớn thành các trang PDF riêng biệt */
+            }
+
+            .page-section:last-child {
+                page-break-after: avoid;
+            }
+
+            /* 4. Định dạng lại thẻ Card để tối ưu mực in và lề giấy */
+            .card {
+                border: none !important;
+                box-shadow: none !important;
+                padding: 1.5rem 0 !important;
+                margin-bottom: 1.5rem !important;
+                page-break-inside: avoid; /* Tránh việc một khối nội dung bị cắt đôi giữa 2 trang */
+            }
+
+            .info-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+            }
+
+            .info-item {
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+            }
+
+            /* 5. Ép hiển thị danh sách bài tập thành dạng danh mục văn bản đẹp mắt */
+            .exercise-item {
+                border: none !important;
+                border-bottom: 1px solid #ddd !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .exercise-header {
+                background: none !important;
+                padding: 0.5rem 0 !important;
+            }
+
+            h1.page-title {
+                color: #000 !important;
+                border-bottom: 2px solid #000 !important;
+                padding-bottom: 5px !important;
+            }
+            h1.page-title::after { display: none; }
+            h2 { color: #000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+        <div class="profile-box">
+        <div class="profile-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <img src="avatar.jpg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+</div>
+            <h2>Trần Thị Quỳnh Anh</h2>
+            <p>Khóa QH2025 - Lớp 25E14</p>
+        </div>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="switchPage('intro', this)">
+                    <button>👤 Giới thiệu</button>
+                </li>
+                <li class="nav-item" onclick="switchPage('exercises', this)">
+                    <button>📚 Bài tập thực hành</button>
+                </li>
+                <li class="nav-item" onclick="switchPage('summary', this)">
+                    <button>📝 Tổng kết</button>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT COMPONENT -->
+    <main class="main-content">
+
+        <!-- TRANG 1: GIỚI THIỆU -->
+        <section id="intro" class="page-section active">
+            <h1 class="page-title">Giới thiệu Bản thân</h1>
+            
+            <div class="card">
+                <h2>Thông tin cơ bản</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="label">Sinh viên</div>
+                        <div class="value">Trần Thị Quỳnh Anh</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Mã số sinh viên</div>
+                        <div class="value">25040465</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Mã lớp học phần</div>
+                        <div class="value">VNU1001_E252056</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Đơn vị đào tạo</div>
+                        <div class="value">Khoa Ngôn ngữ và Văn hóa Anh, ULIS - ĐHQGHN</div>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <strong>Sở thích:</strong> Nghe nhạc rap và pop, đọc sách, xem phim giải trí.
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Mục tiêu học tập & Định hướng</h2>
+                <p>Em đặt ra mục tiêu rõ ràng là tốt nghiệp loại <strong>Giỏi</strong> và trở thành một <strong>giáo viên dạy tiếng Anh</strong> chuyên nghiệp. Bản thân nhận thức sâu sắc những khó khăn, thử thách phía trước trong hành trình này, nhưng em cam kết sẽ luôn nỗ lực hết mình, chủ động tích lũy kiến thức để đạt được ước mơ.</p>
+            </div>
+
+            <div class="card">
+                <h2>Mục tiêu của Portfolio</h2>
+                <ul>
+                    <li style="margin-bottom: 0.5rem;">Trình bày toàn bộ các kỹ năng công nghệ số và tư duy AI đã học được trong suốt quá trình làm bài tập lớn một cách khoa học, chuyên nghiệp.</li>
+                    <li>Lưu trữ, hệ thống hóa các sản phẩm cá nhân giúp việc kiểm tra, truy cập, chia sẻ báo cáo và minh chứng liên quan đến học phần trở nên dễ dàng nhất.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TRANG 2: BÀI TẬP THỰC HÀNH -->
+        <section id="exercises" class="page-section">
+            <h1 class="page-title">Bài tập thực hành</h1>
+            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Nhấp trực tiếp vào tiêu đề của từng bài để xem nội dung báo cáo PDF chi tiết ngay tại dòng.</p>
+
+            <div class="card">
+                <div class="exercise-list">
+                    
+                    <!-- Bài 1 -->
+                    <div class="exercise-item" id="ex1">
+                        <div class="exercise-header" onclick="toggleExercise('ex1', 'bai1.pdf')">
+                            <span>Bài 1: Thao tác cơ bản với tệp tin và thư mục</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container">
+                            <!-- iFrame sẽ tự động nạp nguồn bằng JS khi click -->
+                        </div>
+                    </div>
+
+                    <!-- Bài 2 -->
+                    <div class="exercise-item" id="ex2">
+                        <div class="exercise-header" onclick="toggleExercise('ex2', 'bai2.pdf')">
+                            <span>Bài 2: Tìm kiếm và đánh giá thông tin học thuật</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container"></div>
+                    </div>
+
+                    <!-- Bài 3 -->
+                    <div class="exercise-item" id="ex3">
+                        <div class="exercise-header" onclick="toggleExercise('ex3', 'bai3.pdf')">
+                            <span>Bài 3: Viết prompt hiệu quả cho các tác vụ học tập</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container"></div>
+                    </div>
+
+                    <!-- Bài 4 -->
+                    <div class="exercise-item" id="ex4">
+                        <div class="exercise-header" onclick="toggleExercise('ex4', 'bai4.pdf')">
+                            <span>Bài 4: Sử dụng công cụ hợp tác trực tuyến cho dự án nhóm</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container"></div>
+                    </div>
+
+                    <!-- Bài 5 -->
+                    <div class="exercise-item" id="ex5">
+                        <div class="exercise-header" onclick="toggleExercise('ex5', 'bai5.pdf')">
+                            <span>Bài 5: Sử dụng AI tạo sinh để hỗ trợ sáng tạo nội dung</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container"></div>
+                    </div>
+
+                    <!-- Bài 6 -->
+                    <div class="exercise-item" id="ex6">
+                        <div class="exercise-header" onclick="toggleExercise('ex6', 'bai6.pdf')">
+                            <span>Bài 6: Sử dụng AI có trách nhiệm trong học tập và nghiên cứu</span>
+                            <span class="arrow-icon">▶</span>
+                        </div>
+                        <div class="pdf-container"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANG 3: TỔNG KẾT -->
+        <section id="summary" class="page-section">
+            <h1 class="page-title">Tổng kết khóa học</h1>
+
+            <div class="card">
+                <h2>Vai trò & Trải nghiệm học tập</h2>
+                <p>Với vai trò là một sinh viên ngành Ngôn ngữ Anh, việc xây dựng sản phẩm cá nhân này mang ý nghĩa rất lớn giúp em cấu trúc lại toàn bộ bài tập và minh chứng thực hành một cách khoa học nhất. Qua đó, em rèn luyện được tư duy tổ chức dữ liệu mạch lạc, cách làm rõ mục tiêu học tập cá nhân và tăng cường năng lực giao tiếp văn bản số.</p>
+            </div>
+
+            <div class="card">
+                <h2>Kiến thức & Kỹ năng cốt lõi</h2>
+                <ul style="padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li>Khả năng xây dựng và trình bày các báo cáo kết quả học tập logic, đúng quy chuẩn.</li>
+                    <li>Sắp xếp, quản lý các tệp tài liệu số và minh chứng bài tập trực quan, dễ định hướng cho người xem.</li>
+                    <li>Kỹ năng ứng dụng công nghệ số kết hợp AI để tối ưu hóa quá trình học tập ngôn ngữ một cách hiệu quả.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Điểm tâm đắc & Thách thức</h2>
+                <p><strong>Tâm đắc:</strong> Tạo ra được một giao diện web tối giản nhưng chuyên nghiệp. Việc kết hợp khéo léo gam màu tím và hồng pastel giúp không gian lưu trữ bài học mang tính cá nhân, thanh lịch và tạo cảm giác dễ chịu khi tương tác.</p>
+                <blockquote>
+                    "Thách thức lớn nhất là làm sao quản lý tốt khối lượng file bài tập và đảm bảo giao diện thích ứng mượt mà trên mọi thiết bị di động."
+                </blockquote>
+                <p style="margin-top: 0.8rem;"><strong>Giải pháp:</strong> Áp dụng linh hoạt hệ thống bố cục CSS Grid, Sidebar điều hướng nhanh cùng tính năng tối ưu in ấn tự động hóa, giúp tối giản hóa trải nghiệm người dùng.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- --- XỬ LÝ LOGIC JAVASCRIPT --- -->
+    <script>
+        // 1. Hàm chuyển đổi tab trang web nhanh
+        function switchPage(pageId, navElement) {
+            // Ẩn tất cả các trang
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Gỡ class active cũ ở Menu thanh điều hướng
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            // Kích hoạt trang được lựa chọn công khai
+            document.getElementById(pageId).classList.add('active');
+            navElement.classList.add('active');
+
+            // Cuộn màn hình về đầu trang mượt mà
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 2. Hàm xử lý đóng/mở xem nhanh tệp PDF inline
+        function toggleExercise(itemId, pdfSrc) {
+            const currentItem = document.getElementById(itemId);
+            const container = currentItem.querySelector('.pdf-container');
+            const isActive = currentItem.classList.contains('active');
+
+            // Đóng tất cả các mục bài tập đang mở trước đó để thu gọn diện tích
+            const allItems = document.querySelectorAll('.exercise-item');
+            allItems.forEach(item => {
+                item.classList.remove('active');
+                // Không xóa nội dung để giữ bộ nhớ cache nếu muốn, hoặc xóa để tối ưu tốc độ. Ở đây ta làm sạch để tránh nặng trang.
+                const pdfCont = item.querySelector('.pdf-container');
+                if (pdfCont) pdfCont.innerHTML = '';
+            });
+
+            // Nếu bài tập đó trước đó chưa mở, thì tiến hành nạp iframe hiển thị
+            if (!isActive) {
+                currentItem.classList.add('active');
+                // Tạo thẻ iframe linh hoạt
+                container.innerHTML = `<iframe src="${pdfSrc}" class="pdf-viewer"> Trình duyệt của bạn không hỗ trợ xem trực tiếp PDF. </iframe>`;
+            }
+        }
+    </script>
+</body>
+</html>
